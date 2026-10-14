@@ -110,6 +110,7 @@ class Agent:
         self.client = client or OpenAI(base_url=BASE_URL, api_key="not-needed")
         self.messages: list[dict] = [{"role": "system", "content": SYSTEM_PROMPT}]
         self.tool_calls: list[dict] = []  # [{name, args, result}] across the whole conversation
+        self.verified = False  # set by _get_customer_verified; gates issue_refund below
 
     def _get_customer_verified(self, email: str) -> dict:
         """get_customer, but with identity verification computed in code, not by the LLM.
@@ -124,6 +125,7 @@ class Agent:
         user_texts = [m["content"] for m in self.messages if m.get("role") == "user" and m.get("content")]
         stated = _last_stated_4digits(user_texts)
         verified = stated is not None and stated == raw["card_last4"]
+        self.verified = verified
         return {"id": raw["id"], "name": raw["name"], "status": raw["status"], "verified": verified}
 
     def send(self, user_message: str) -> str:
@@ -147,6 +149,11 @@ class Agent:
                 args = json.loads(tc.function.arguments)
                 if tc.function.name == "get_customer":
                     result = self._get_customer_verified(**args)
+                elif tc.function.name == "issue_refund" and not self.verified:
+                    # issue_refund(txn_id, amount) per the spec has no identity param to
+                    # check server-side, so this is the one enforcement point available —
+                    # refuse the call here rather than trust the model to have verified first.
+                    result = {"ok": False, "reason": "customer_not_verified"}
                 else:
                     impl = TOOL_IMPLS[tc.function.name]
                     result = impl(**args)

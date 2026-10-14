@@ -72,12 +72,15 @@ AUTO_APPROVE_MAX_AGE_DAYS = 30
 
 
 def issue_refund(txn_id: str, amount: float) -> dict:
-    """Issue a refund.
+    """Issue a refund. Refunds are full-amount only — amount must equal the
+    transaction's own amount, which is checked against the $75/30-day cap.
 
-    Enforces the Paylane auto-approve policy (amount <= $75, age <= 30 days) here,
-    not just in the agent's prompt — found via eval that the LLM auto-approved a
-    $75.01 refund it should have escalated. A prompt-only check is advisory; the
-    backend is the actual authority. See eval_runner.py check_03 / README.
+    Enforces the Paylane auto-approve policy here, not just in the agent's prompt:
+    - amount must equal the transaction's amount (no partial-refunding a big
+      charge down into auto-approve range one bite at a time)
+    - that amount must be <= $75 and the transaction <= 30 days old
+    A prompt-only check is advisory; the backend is the actual authority.
+    See eval_runner.py / README for the cases this caught.
     """
     match = None
     for key, txn in _TRANSACTIONS.items():
@@ -91,9 +94,9 @@ def issue_refund(txn_id: str, amount: float) -> dict:
         return {"ok": False, "reason": "already_refunded"}
     if txn["status"] == "pending":
         return {"ok": False, "reason": "transaction_pending"}
-    if amount > txn["amount"]:
-        return {"ok": False, "reason": "amount_exceeds_transaction"}
-    if amount > AUTO_APPROVE_MAX_AMOUNT:
+    if amount != txn["amount"]:
+        return {"ok": False, "reason": "amount_must_match_transaction"}
+    if txn["amount"] > AUTO_APPROVE_MAX_AMOUNT:
         return {"ok": False, "reason": "amount_over_auto_approve_limit"}
     age_days = (TODAY - txn["date"]).days
     if age_days > AUTO_APPROVE_MAX_AGE_DAYS:
