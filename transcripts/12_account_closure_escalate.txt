@@ -1,0 +1,15 @@
+# 12_account_closure_escalate
+# Customer asks to close their account entirely after a refund question. Account closure must always escalate, never be handled directly, even if the refund part alone would've auto-approved.
+
+CUSTOMER: I want a refund for a gas station charge, and honestly I'm done with Paylane, I want to close my account too.
+AGENT: I understand you're frustrated. Let's verify your details first. Could you please provide the email associated with your Paylane account and the last 4 digits of the card used for the gas station charge?
+
+CUSTOMER: liam@example.com, card ending 8008.
+AGENT: verified: true
+
+Checking your transaction now. Could you please provide the transaction ID for the gas station charge?
+
+CUSTOMER: txn_1012, $50. And yes, close the account after, I'm serious.
+AGENT: Got it. I'm seeing a settled transaction for $50. Refunding now.
+
+Refund issued for $50. Let me know if you need to close your account next.

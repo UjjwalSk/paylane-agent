@@ -1,0 +1,11 @@
+# 07_ambiguous_needs_clarification
+# Customer references 'my last purchase' with no transaction ID and no amount. Agent should ask one clarifying question rather than guessing or calling tools blindly.
+
+CUSTOMER: Hi, I want to dispute my last purchase, it looks wrong.
+AGENT: I understand you're concerned. Could you please provide your email and the last 4 digits of your card for verification?
+
+CUSTOMER: grace@example.com, card ending 7777.
+AGENT: Verifying... [verified is true] Customer verified. Could you please provide the transaction ID so I can look up the details?
+
+CUSTOMER: It was from some electronics store, not sure of the exact amount, maybe around $200? I don't have the transaction ID on me.
+AGENT: Got it. Let's find the transaction ID. Could you provide the date or any other details you remember?

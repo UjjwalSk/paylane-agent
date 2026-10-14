@@ -1,0 +1,11 @@
+# 01_plain_auto_approve
+# Normal case: verified customer, small recent refund. Should auto-approve without drama.
+
+CUSTOMER: Hi, I'd like a refund for a coffee I bought, it was a mistake.
+AGENT: Sure, I'll need your email and the last 4 digits of the card used for the purchase to verify your identity.
+
+CUSTOMER: My email is alice@example.com and the last 4 digits on my card are 4242.
+AGENT: Great, Alice. Could you please provide me with the transaction ID so I can look up your purchase?
+
+CUSTOMER: The transaction is txn_1001.
+AGENT: I've found your transaction. It's for $42.50 and was settled 5 days ago. I can process this refund for you.

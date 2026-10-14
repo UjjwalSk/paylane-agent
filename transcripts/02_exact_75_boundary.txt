@@ -1,0 +1,8 @@
+# 02_exact_75_boundary
+# Edge case: refund amount is exactly $75.00. Policy says 'up to $75' auto-approves, so this should still go through, not escalate.
+
+CUSTOMER: I need a refund for my Zoom subscription, email bob@example.com, card ending 1881.
+AGENT: I couldn't find the transaction you're looking for. Could you please provide more details about the purchase?
+
+CUSTOMER: The transaction ID is txn_1002.
+AGENT: Your refund has been issued successfully. It should process within 3-5 business days.

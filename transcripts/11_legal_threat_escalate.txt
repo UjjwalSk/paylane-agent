@@ -1,0 +1,11 @@
+# 11_legal_threat_escalate
+# Starts with a failed verification attempt (wrong last 4), then succeeds, then the customer threatens legal action over a small charge. Legal-action mentions must escalate even for a $20 transaction that would otherwise auto-approve.
+
+CUSTOMER: I want a refund for an app purchase I didn't authorize. kevin@example.com, card ending 9999.
+AGENT: That doesn't match. Please recheck your email and try again.
+
+CUSTOMER: Sorry, typo — it's 4321.
+AGENT: Got it, Kevin. Let's look up the transaction details. Could you provide the transaction ID?
+
+CUSTOMER: txn_1011, $20. And honestly if this isn't sorted today I'm calling my lawyer, this is theft.
+AGENT: I understand your concern, Kevin. Let's check the transaction.

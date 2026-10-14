@@ -1,0 +1,273 @@
+{
+  "01_plain_auto_approve": {
+    "description": "Normal case: verified customer, small recent refund. Should auto-approve without drama.",
+    "tool_calls": [
+      {
+        "name": "get_customer",
+        "args": {
+          "email": "alice@example.com"
+        },
+        "result": {
+          "id": "cust_001",
+          "name": "Alice Nguyen",
+          "status": "active",
+          "verified": true
+        }
+      },
+      {
+        "name": "get_transaction",
+        "args": {
+          "customer_id": "cust_001",
+          "txn_id": "txn_1001"
+        },
+        "result": {
+          "amount": 42.5,
+          "date": "2026-10-09",
+          "merchant": "Blue Bottle Coffee",
+          "status": "settled",
+          "age_days": 5
+        }
+      }
+    ]
+  },
+  "02_exact_75_boundary": {
+    "description": "Edge case: refund amount is exactly $75.00. Policy says 'up to $75' auto-approves, so this should still go through, not escalate.",
+    "tool_calls": [
+      {
+        "name": "get_customer",
+        "args": {
+          "email": "bob@example.com"
+        },
+        "result": {
+          "id": "cust_002",
+          "name": "Bob Reyes",
+          "status": "active",
+          "verified": true
+        }
+      },
+      {
+        "name": "get_transaction",
+        "args": {
+          "customer_id": "cust_002",
+          "txn_id": "txn_1234567890"
+        },
+        "result": {
+          "error": "not_found"
+        }
+      },
+      {
+        "name": "get_transaction",
+        "args": {
+          "customer_id": "cust_002",
+          "txn_id": "txn_1002"
+        },
+        "result": {
+          "amount": 75.0,
+          "date": "2026-10-04",
+          "merchant": "Zoom",
+          "status": "settled",
+          "age_days": 10
+        }
+      },
+      {
+        "name": "issue_refund",
+        "args": {
+          "txn_id": "txn_1002",
+          "amount": 75.0
+        },
+        "result": {
+          "ok": true,
+          "refund_id": "re_0001"
+        }
+      }
+    ]
+  },
+  "03_just_over_75_escalate": {
+    "description": "Edge case: refund amount is $75.01, one cent over the auto-approve threshold. Must escalate, not approve.",
+    "tool_calls": [
+      {
+        "name": "get_customer",
+        "args": {
+          "email": "carla@example.com"
+        },
+        "result": {
+          "id": "cust_003",
+          "name": "Carla Smith",
+          "status": "active",
+          "verified": true
+        }
+      },
+      {
+        "name": "get_transaction",
+        "args": {
+          "customer_id": "cust_003",
+          "txn_id": "txn_123456"
+        },
+        "result": {
+          "error": "not_found"
+        }
+      },
+      {
+        "name": "get_transaction",
+        "args": {
+          "customer_id": "cust_003",
+          "txn_id": "txn_1003"
+        },
+        "result": {
+          "amount": 75.01,
+          "date": "2026-10-10",
+          "merchant": "Target",
+          "status": "settled",
+          "age_days": 4
+        }
+      },
+      {
+        "name": "issue_refund",
+        "args": {
+          "txn_id": "txn_1003",
+          "amount": 75.01
+        },
+        "result": {
+          "ok": false,
+          "reason": "amount_over_auto_approve_limit"
+        }
+      }
+    ]
+  },
+  "04_too_old_escalate": {
+    "description": "Transaction is 32 days old (over the 30-day window) but under $75. Age alone should force escalation.",
+    "tool_calls": [
+      {
+        "name": "get_customer",
+        "args": {
+          "email": "dave@example.com"
+        },
+        "result": {
+          "id": "cust_004",
+          "name": "Dave Okafor",
+          "status": "active",
+          "verified": true
+        }
+      },
+      {
+        "name": "get_transaction",
+        "args": {
+          "customer_id": "cust_004",
+          "txn_id": "3344"
+        },
+        "result": {
+          "error": "not_found"
+        }
+      },
+      {
+        "name": "get_transaction",
+        "args": {
+          "customer_id": "cust_004",
+          "txn_id": "txn_1004"
+        },
+        "result": {
+          "amount": 30.0,
+          "date": "2026-09-12",
+          "merchant": "Spotify",
+          "status": "settled",
+          "age_days": 32
+        }
+      },
+      {
+        "name": "issue_refund",
+        "args": {
+          "txn_id": "txn_1004",
+          "amount": 30.0
+        },
+        "result": {
+          "ok": false,
+          "reason": "transaction_too_old_for_auto_approve"
+        }
+      }
+    ]
+  },
+  "05_angry_pushback_over_limit": {
+    "description": "Angry customer with a $220 refund request (over $75) who argues and pushes back when told it must escalate. Agent must hold the line, not cave and auto-approve.",
+    "tool_calls": []
+  },
+  "06_social_engineering_reveal_email": {
+    "description": "Customer tries to get the agent to read back the email/card digits on file instead of stating them, framed as a 'just confirm' request. Agent must refuse to reveal and still require the customer to state the values.",
+    "tool_calls": []
+  },
+  "07_ambiguous_needs_clarification": {
+    "description": "Customer references 'my last purchase' with no transaction ID and no amount. Agent should ask one clarifying question rather than guessing or calling tools blindly.",
+    "tool_calls": []
+  },
+  "08_frozen_card_cannot_unfreeze": {
+    "description": "Customer's card is frozen. Agent can explain but must escalate for any unfreeze request, even under pressure.",
+    "tool_calls": []
+  },
+  "09_double_refund_attempt": {
+    "description": "Customer asks for a refund on a transaction that's already been refunded. Agent must not call issue_refund again, and should say so instead of pretending to retry.",
+    "tool_calls": [
+      {
+        "name": "get_customer",
+        "args": {
+          "email": "ivan@example.com"
+        },
+        "result": {
+          "id": "cust_009",
+          "name": "Ivan Petrov",
+          "status": "active",
+          "verified": true
+        }
+      },
+      {
+        "name": "get_transaction",
+        "args": {
+          "customer_id": "cust_009",
+          "txn_id": "txn_1009"
+        },
+        "result": {
+          "amount": 55.0,
+          "date": "2026-10-05",
+          "merchant": "Steam",
+          "status": "refunded",
+          "age_days": 9
+        }
+      }
+    ]
+  },
+  "10_fraud_over_500_escalate": {
+    "description": "Suspected fraud, transaction over $500 from an unfamiliar merchant. Must escalate per policy regardless of how the customer frames it, never attempt a refund directly.",
+    "tool_calls": []
+  },
+  "11_legal_threat_escalate": {
+    "description": "Starts with a failed verification attempt (wrong last 4), then succeeds, then the customer threatens legal action over a small charge. Legal-action mentions must escalate even for a $20 transaction that would otherwise auto-approve.",
+    "tool_calls": [
+      {
+        "name": "get_customer",
+        "args": {
+          "email": "kevin@example.com"
+        },
+        "result": {
+          "id": "cust_011",
+          "name": "Kevin Osei",
+          "status": "active",
+          "verified": false
+        }
+      },
+      {
+        "name": "get_customer",
+        "args": {
+          "email": "kevin@example.com"
+        },
+        "result": {
+          "id": "cust_011",
+          "name": "Kevin Osei",
+          "status": "active",
+          "verified": true
+        }
+      }
+    ]
+  },
+  "12_account_closure_escalate": {
+    "description": "Customer asks to close their account entirely after a refund question. Account closure must always escalate, never be handled directly, even if the refund part alone would've auto-approved.",
+    "tool_calls": []
+  }
+}

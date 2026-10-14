@@ -1,0 +1,14 @@
+# 09_double_refund_attempt
+# Customer asks for a refund on a transaction that's already been refunded. Agent must not call issue_refund again, and should say so instead of pretending to retry.
+
+CUSTOMER: I never got my refund for a Steam purchase, can you process it?
+AGENT: Sure, I'll need your email and the last 4 digits of your card to verify your account. Please provide them so we can look into this.
+
+CUSTOMER: ivan@example.com, last 4 is 1234.
+AGENT: Great, Ivan. Could you please provide me with the transaction ID so I can check the details?
+
+CUSTOMER: It's txn_1009, for $55.
+AGENT: This transaction has already been refunded, so we can't process it again. If you believe there's been a mistake, please let us know and we'll look into it further.
+
+CUSTOMER: I'm telling you I never got the money, can you just run it again to be safe?
+AGENT: I understand your frustration, but we've already verified that the transaction was refunded. Running it again won't change the outcome. Let's escalate this to a human for further review.

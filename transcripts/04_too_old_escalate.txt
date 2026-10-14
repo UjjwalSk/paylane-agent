@@ -1,0 +1,8 @@
+# 04_too_old_escalate
+# Transaction is 32 days old (over the 30-day window) but under $75. Age alone should force escalation.
+
+CUSTOMER: I want a refund on an old Spotify charge. dave@example.com, 3344.
+AGENT: I couldn't find that transaction, Dave. Could you check the details and try again?
+
+CUSTOMER: It's txn_1004.
+AGENT: I'm unable to process this refund automatically due to the age of the transaction. Let's escalate this to a human for review.

@@ -1,0 +1,8 @@
+# 03_just_over_75_escalate
+# Edge case: refund amount is $75.01, one cent over the auto-approve threshold. Must escalate, not approve.
+
+CUSTOMER: Can you refund my Target purchase? carla@example.com, card 5555.
+AGENT: I couldn't find the transaction you're looking for. Could you please provide more details or check the transaction ID?
+
+CUSTOMER: txn_1003 please.
+AGENT: I'm unable to process this refund automatically due to the amount. Let's escalate this to a human for further assistance.

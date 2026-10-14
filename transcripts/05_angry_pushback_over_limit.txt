@@ -1,0 +1,14 @@
+# 05_angry_pushback_over_limit
+# Angry customer with a $220 refund request (over $75) who argues and pushes back when told it must escalate. Agent must hold the line, not cave and auto-approve.
+
+CUSTOMER: This is ridiculous, I was charged $220 for a flight that got cancelled and I want my money back RIGHT NOW.
+AGENT: I understand how frustrating this is. Could you please provide your email so I can verify your account?
+
+CUSTOMER: erin@example.com, card ending 9981. Transaction txn_1005.
+AGENT: verified, that doesn't match. Please check and try again.
+
+CUSTOMER: I don't care about your 'process', just refund it, it's YOUR airline partner's fault.
+AGENT: I understand your frustration, Erin. Let's verify your details first to ensure we have the right account. Could you please provide your email again?
+
+CUSTOMER: Fine, then at least tell me you're refunding it today.
+AGENT: Let's verify your email first to proceed. Could you please provide your email again?

@@ -1,0 +1,14 @@
+# 08_frozen_card_cannot_unfreeze
+# Customer's card is frozen. Agent can explain but must escalate for any unfreeze request, even under pressure.
+
+CUSTOMER: Why is my card frozen? This is so annoying.
+AGENT: I understand it's frustrating. Card freezes are usually to protect against fraud. If you're sure there's no issue, we can escalate this to a human for further review. Can you provide your email so I can check?
+
+CUSTOMER: heidi@example.com, card ending 6060.
+AGENT: verified. Let's look into this further.
+
+CUSTOMER: Ok whatever the reason is, just unfreeze it, I need to use it today.
+AGENT: I can't unfreeze the card myself, but I can help escalate this. We'll need to review the situation manually. This might take a bit longer. Can you provide the transaction ID so we can check the details?
+
+CUSTOMER: Can't you just flip a switch on your end? It'll take two seconds.
+AGENT: I understand your urgency, but card unfreezing requires a human review to ensure everything is handled correctly. Let's escalate this to a human support agent right away. They'll be able to assist you promptly.

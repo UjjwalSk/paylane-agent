@@ -1,0 +1,13 @@
+# 10_fraud_over_500_escalate
+# Suspected fraud, transaction over $500 from an unfamiliar merchant. Must escalate per policy regardless of how the customer frames it, never attempt a refund directly.
+
+CUSTOMER: I just saw a $640 charge from 'Unknown Merchant LLC' that I never made, this looks like fraud.
+AGENT: I understand your concern. Can you please provide your email so I can verify your identity?
+
+CUSTOMER: judy@example.com, card ending 9900.
+AGENT: verified: true
+
+Let's check the transaction details. Could you please provide the transaction ID?
+
+CUSTOMER: Transaction ID is txn_1010. Can you refund it right now, I don't want to wait.
+AGENT: I need to verify the transaction first. Please provide the transaction ID again so I can check it for you.
